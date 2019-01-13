@@ -33,9 +33,7 @@ via the global memory
 On the other hand \textbf{distributed memory} refers to a multiprocessor computer system in which each processor (CPU) has its own private memory.
 
 \section{Shared Memory}
-The simplest shared memory system consists of one memory module (M) that can be
-accessed from two processors. Requests arrive at the
-memory module through its two ports. An arbitration unit within the memory
+The simplest shared memory system consists of one memory module that can be accessed from two processors. Requests arrive at the memory module through its two ports. An arbitration unit within the memory
 module passes requests through to a memory controller. If the memory module is
 not busy and a single request arrives, then the arbitration unit passes that request
 to the memory controller and the request is satisfied. The module is placed in the
@@ -63,7 +61,7 @@ read/write to memory, including equal access speed. Commercial examples of
 SMPs are \textbf{Sun Microsystems multiprocessor servers} and \textbf{Silicon Graphics Inc. multiprocessor servers}.
 \begin{figure}[htp]
 \centering
-\includegraphics[scale=0.50]{39352-figure-1.jpg}
+\includegraphics[scale=0.30]{uma.png}
 \caption{Uniform Memory Access}
 \end{figure}
 
@@ -84,22 +82,20 @@ In the NUMA system a, each processor has a part of shared memory. The shared mem
 In this system each processor has part of the shared memory like in the NUMA.
 However, in this case the shared memory consists of cache memory. A COMA
 system requires that data be migrated to the processor requesting it. There is no memory hierarchy and the address space is made of all the caches. There is a cache directory (D) that helps in remote cache access. The Kendall Square Research’s \textbf{KSR-1} machine is an example of such architecture.
-
 % subsection (end)
+
+
+
+\subsection{Shared Memory Programming}
+Shared memory parallel programming is perhaps the easiest model to understand
+because of its similarity with operating systems programming and general multiprogramming. Shared memory programming is done through some extensions to existing programming languages, operating systems, and code libraries.
 
 
 \section{Distributed Memory}
 Distributed Memory systems provide alternative methods for communication and
-movement of data among multiprocessors (compared to shared memory multipro-
-cessor systems). A message passing system typically combines local memory and
-the processor at each node of the interconnection network. There is no global
-memory so it is necessary to move data from one local memory to another by
-means of message passing. This is typically done by send/receive pairs of
-commands, which must be written into the application software by a programmer.
+movement of data among multiprocessors (compared to shared memory multiprocessor systems). A message passing system typically combines local memory and the processor at each node of the interconnection network. There is no global memory so it is necessary to move data from one local memory to another by means of message passing. This is typically done by send/receive pairs of commands, which must be written into the application software by a programmer.
 
-The basis for the scheme is that
-each processor has its own local memory and communicates with other processors
-using messages. The elimination of the need for a large global memory together with its synchronization requirement, gives message passing schemes an edge over shared memory schemes.
+The basis for the scheme is that each processor has its own local memory and communicates with other processors using messages. The elimination of the need for a large global memory together with its synchronization requirement, gives message passing schemes an edge over shared memory schemes.
 
 \begin{figure}[htp]
 \centering
@@ -175,61 +171,28 @@ profitable routing \\
 \end{center}
 \end{adjustwidth}
 
+\subsection{Distributed Memory Programming Models}
+This architecture uses a set of commands that allows processes to
+communicate with each other. These include the send, receive, broadcast, and barrier
+commands. The send command takes a memory buffer and sends it to a destination
+node. The receive command accepts a message from a source node and stores it in a
+specified memory buffer. The basic programming model used in distributed memory architectures is based on the idea of matching a send request on one processor with a receive request on another. 
+In such scheme, send and receive are blocking; that is, send blocks until the corresponding receive is executed before data can be transferred.
+
 
 %subsection (end)
 
 
 \section{Distributed Memory vs Shared Memory}
 
-As indicated before shared memory enjoys the desirable feature that all
-communications are done using implicit loads and stores to a global address
-space. Another fundamental feature of shared memory is that synchronization and
-communication are distinct. Special synchronization operations (mechanisms), in
-addition to the loads and stores operations, need to be employed in order to detect
-when data have been produced and/or consumed. On the other hand, message pas-
-sing employs an explicit communication model. Explicit messages are exchanged
-among processors. Synchronization and communication are unified in message pas-
-sing. The generation of remote, asynchronous events is an integral part of the mess-
-age passing communication model. It is important, however, to indicate that shared
-memory and message passing communication models are universal; that is, it is
-possible to employ one to simulate the other. However, it is observed that it is
-easier to simulate shared memory using message passing than the converse. This
-is basically because of the asynchronous event semantics of message passing as
-compared to the polling semantics of the shared memory.
-A number of desirable features characterize shared memory architectures (see
-Chapter 4). The shared memory communication model allows the programmer to concentrate on the issues related to parallelism by relieving him/her of the details of the
-interprocessor communication. In that sense, the shared memory communication
-model represents a straightforward extension of the uniprocessor programming para-
-digm. In addition, shared memory semantics are independent of the physical location
-and therefore they are open to the dynamic optimization offered by the underlying
-operating system. On the other hand, the shared memory communication model is in
-essence a polling interface. This is a drawback as far as synchronization is concerned.
-This fact has been recognized by a number of multiprocessor architects and their
-response has always been to augment the basic shared memory communication
-model with additional synchronization mechanisms. An additional drawback of
-shared memory is that in order for data to cross the network, a complete round trip
-has to be made. One-way communication of data is not possible. Message passing can be characterized as employing an interrupt-driven com-
-munication model. In message passing, messages include both data and synchroni-
-zation in a single unit. As such, the message passing communication model lends
-itself to those operating system activities in which communication patterns are
-explicitly known in advance, for example, I/O, interprocessor interrupts, and task
-and data migration. The message passing communication model lends itself also
-to applications that have large synchronization components, for example, solution
-of systems of sparse matrices and event-driven simulation. In addition, message
-passing communication models are natural client – server style decomposition. On
-the other hand, message passing suffers from the need for marshaling cost, that
-is, the cost of assembling and disassembling of the message.
-One natural conclusion arising from the above discussion is that shared memory
-and message passing communication models each lend themselves naturally to
-certain application domains. Shared memory manifests itself to application writers
-while message passing manifests itself to operating systems designers. It is therefore
-natural to consider combining both shared memory and message passing in general-
-purpose multiprocessor systems. This has been the main driving force behind
-systems such as the Stanford FLexible Architecture for SHared memory (FLASH)
-system. It is a multiprocessor system that efficiently integrates sup-
-port for shared memory and message passing while minimizing both hardware and
-software overhead.
+In the shared-memory architecture all the CPU cores can access the same memory and are all controlled by a single operating system. Modern processors are all multicore processors, with many CPU-cores manufactured together on the same physical silicon chip.With this shared memory enjoys the desirable feature that all
+communications are done using implicit loads and stores to a global address space.
 
+There are, however, limitations to the shared-memory approach due to all the CPU-cores competing for access to memory over a shared bus, much like the obvious issues in trying to cram too many workers into the same office. This can be alleviated to some extent by introducing memory caches or putting several processors together in a NUMA architecture, but there is no way we can reach the hundreds of thousands of CPU-cores we need for today’s multi-petaflop supercomputers.
+
+Shared memory systems may be easier to program, but are difficult to scale up to a large number of processors. If scalability to larger and larger systems (as measured by the number of processing units) was to continue, systems had to use distributed memory techniques. It is apparent that message passing systems are the only way to efficiently increase the number of processors managed by a multiprocessor system.
+There are, however, a number of problems associated with message passing systems.
+These include communication overhead and difficulty of programming.
 
 \bibliographystyle{plain}
 \bibliography{references}
